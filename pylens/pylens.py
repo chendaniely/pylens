@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from os import enviorn
-from subprocess import call
+from subprocess import call, PIPE, STDOUT, DEVNULL
 
 from pandas import DataFrame
 
@@ -75,7 +75,10 @@ def call_lens(in_file, lens_env, verbose_lens=True, logger=None):
     if logger is not None:
         logger.debug('env with lens_env: {}\n\n'.format(env))
         logger.debug('Lens subprocess call')
-        
-    call(['lens', '-batch', in_file], env=env)  # from subprocess
+
+    if verbose_lens:
+        call(['lens', '-batch', in_file], env=env)  # from subprocess
+    else:
+        call(['lens', '-batch', in_file], env=env, stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)  # from subprocess
 
     if logger is not None: logger.debug('Lens call finished (Python)')
