@@ -34,7 +34,7 @@ def tail(f, window):
         block -= 1
     return ''.join(data).splitlines()[-window:]
 
-def get_new_state_from_outfile(self, outfile, num_lines, split_index, logger=None):
+def get_new_state_from_outfile(outfile, num_lines, split_index, logger=None):
     """Reads in the new state from a LENS outfile
     Results are returned as a Python Pandas Series
     """
@@ -57,7 +57,7 @@ def get_new_state_from_outfile(self, outfile, num_lines, split_index, logger=Non
     if logger is not None: logger.debug('new_state:\n{}'.format(new_state))
     return(new_state)
 
-def call_lens(self, in_file, lens_env, logger=None):
+def call_lens(in_file, lens_env, verbose_lens=True, logger=None):
     """Calls lens as a subprocess
     Parameters for the LENS in_file are passed as a python dictionary
     """
