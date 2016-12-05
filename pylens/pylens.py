@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from os import enviorn
+from os import environ
 from subprocess import call, PIPE, STDOUT, DEVNULL
 
 from pandas import DataFrame
