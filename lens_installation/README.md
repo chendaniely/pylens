@@ -8,11 +8,12 @@ or
 
 https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
 
-    wget https://github.com/chendaniely/multi-agent-neural-network/raw/master/Lens.tgz
+    wget https://github.com/chendaniely/pylens/raw/master/lens_installation/Lens.tgz
     wget http://web.stanford.edu/group/mbc/LENSManual/Manual/Dist/lens.tar.gz
     tar xvzf Lens.tgz
 
 note the older lens link has a capital letter, the one from Stanford has a lower case
+
 #### Arch Linux
 The commands below (without any of the apt-get commands) should *just* work.
 Remember to export the variables listed at the bottom of the document
