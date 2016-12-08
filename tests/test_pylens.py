@@ -7,6 +7,8 @@ test_pylens
 
 Tests for `pylens` module.
 """
+import os
+import sys
 
 import pytest
 
@@ -39,3 +41,9 @@ def test_command_line_interface():
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output
+
+def test_call_lens():
+    print('hi daniel', file=sys.stderr)
+    print(os.getcwd(), file=sys.stderr)
+    pylens.call_lens('tests/test_lens_files/in_files/global_cascades-01-train.in',
+                     {'test': 'test'})
