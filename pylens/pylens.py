@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from os import environ
+import os
+import sys
 from subprocess import call, PIPE, STDOUT, DEVNULL
 
 from pandas import DataFrame
@@ -66,7 +67,7 @@ def call_lens(in_file, lens_env, verbose_lens=True, logger=None):
         logger.debug('Using in file: {}'.format(in_file))
         logger.debug('Lens env: {}'.format(lens_env))
 
-    env = environ  # from os
+    env = os.environ  # from os
 
     if logger is not None: logger.debug('env: {}\n\n'.format(env))
 
