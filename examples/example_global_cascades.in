@@ -9,8 +9,7 @@ set criterion 50
 deleteNets *
 
 echo loading examples
-loadExamples example_examples_
-$agent_id.ex -s encoder
+loadExamples example_examples_$agent_id.ex -s encoder
 
 echo building network structure
 # BUILD NETWORK STRUCTURE
