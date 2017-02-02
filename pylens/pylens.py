@@ -35,6 +35,19 @@ def tail(f, window):
         block -= 1
     return ''.join(data).splitlines()[-window:]
 
+def write_ex_file(filepath, examples_list, example_type,
+                  example_name='example'):
+    """Write an example file for lens
+    """
+    with open(filepath, 'w') as f:
+        for idx, example in enumerate(examples_list):
+            ex_string = 'name: {}-{}\n{}: {};\n'.format(
+                example_name,
+                idx,
+                example_type,
+                ' '.join(str(x) for x in example))
+            f.write(ex_string)
+
 def get_new_state_from_outfile(outfile, num_lines, split_index, logger=None):
     """Reads in the new state from a LENS outfile
     Results are returned as a Python Pandas Series
