@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import random
 from subprocess import call, PIPE, STDOUT, DEVNULL
 
 from pandas import DataFrame
@@ -34,6 +35,50 @@ def tail(f, window):
         bytes -= BUFSIZ
         block -= 1
     return ''.join(data).splitlines()[-window:]
+
+def flip_1_0(number):
+    """Flip 1 to 0, and vice versa
+    :parm number: 1 or 0 to flip
+    :type number: int
+    :returns flipped value
+    :rtype: int
+    """
+    assert number in [0, 1], 'number to flip is not a 0 or 1'
+    assert isinstance(number, int), 'number to flip is not int'
+    if number == 0:
+        return 1
+    elif number == 1:
+        return 0
+    else:
+        raise ValueError('Number to flip not 0 or 1')
+
+def mutate(list_to_mutate, mutation_prob):
+    """Mutates each element of a list by the mutation_prob
+    Mutating means flipping the 1 to a 0 or vice versa
+    :param list_to_mutate: list of values to mutate
+    :type list_to_mutate: list
+    :param mutation_prob: probability of flipping each element in list
+    :type mutation_prob: float
+    if the mutation_prob == 0, then the original list is returned
+    else, there is a probabliy that prototype is still returned
+    """
+    if mutation_prob > 0.0 and mutation_prob <= 1.0:
+        post_mutation_list = list_to_mutate[:]
+        for idx, value in enumerate(list_to_mutate):
+            prob = random.random()
+            if prob <= mutation_prob:
+                post_mutation_list[idx] = flip_1_0(value)
+        if ((post_mutation_list is list_to_mutate) or
+                (post_mutation_list == list_to_mutate)):
+            warnings.warn('Mutated example is equal to prototype',
+                          UserWarning)
+        return post_mutation_list
+    elif mutation_prob == 0.0:
+        return list_to_mutate
+    else:
+        raise ValueError('Incorrect value for mutation probability ' +
+                         'probability needs to be between ' +
+                         '0 and 1 inclusive')
 
 def write_ex_file(filepath, examples_list, example_type,
                   example_name='example'):
