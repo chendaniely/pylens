@@ -108,6 +108,11 @@ def get_new_state_from_outfile(outfile, num_lines, split_index,
 
         elif lens_type == 'recurrent':
             len_bank = num_lines / 2
+            if len_bank.is_integer():
+                len_bank = int(len_bank)
+            else:
+                raise ValueError
+
             output_lines = tail(f, window=num_lines + 2)
             p1 = output_lines[1:len_bank+1]
             assert(len(p1) == len_bank)
