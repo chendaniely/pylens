@@ -11,30 +11,31 @@ def tail(f, window):
     Returns the last `window` lines of file `f` as a list.
     from: http://stackoverflow.com/questions/136168/get-last-n-lines-of-a-file-with-python-similar-to-tail
     """
-    if window == 0:
-        return []
-    BUFSIZ = 1024
-    f.seek(0, 2)
-    bytes = f.tell()
-    size = window + 1
-    block = -1
-    data = []
-    while size > 0 and bytes > 0:
-        if bytes - BUFSIZ > 0:
-            # Seek back one whole BUFSIZ
-            f.seek(block * BUFSIZ, 2)
-            # read BUFFER
-            data.insert(0, f.read(BUFSIZ))
-        else:
-            # file too small, start from begining
-            f.seek(0,0)
-            # only read what was not read
-            data.insert(0, f.read(bytes))
-        linesFound = data[0].count('\n')
-        size -= linesFound
-        bytes -= BUFSIZ
-        block -= 1
-    return ''.join(data).splitlines()[-window:]
+    # if window == 0:
+    #     return []
+    # BUFSIZ = 1024
+    # f.seek(0, 2)
+    # bytes = f.tell()
+    # size = window + 1
+    # block = -1
+    # data = []
+    # while size > 0 and bytes > 0:
+    #     if bytes - BUFSIZ > 0:
+    #         # Seek back one whole BUFSIZ
+    #         f.seek(block * BUFSIZ, 2)
+    #         # read BUFFER
+    #         data.insert(0, f.read(BUFSIZ))
+    #     else:
+    #         # file too small, start from begining
+    #         f.seek(0,0)
+    #         # only read what was not read
+    #         data.insert(0, f.read(bytes))
+    #     linesFound = data[0].count('\n')
+    #     size -= linesFound
+    #     bytes -= BUFSIZ
+    #     block -= 1
+    # return ''.join(data).splitlines()[-window:]
+    return f.readlines()[-window:]
 
 def flip_1_0(number):
     """Flip 1 to 0, and vice versa
@@ -93,17 +94,33 @@ def write_ex_file(filepath, examples_list, example_type,
                 ' '.join(str(x) for x in example))
             f.write(ex_string)
 
-def get_new_state_from_outfile(outfile, num_lines, split_index, logger=None):
+def get_new_state_from_outfile(outfile, num_lines, split_index,
+                               lens_type='feedforward', logger=None):
     """Reads in the new state from a LENS outfile
     Results are returned as a Python Pandas Series
     """
     if logger is not None: logger.debug('Getting new state from: {}'.format(outfile))
-
+    if logger is not None: logger.debug('Lens type: {}'.format(lens_type))
     with open(outfile, 'r') as f:
-        output_lines = tail(f, window=num_lines)
-        out_df = DataFrame({'outfile': output_lines})
-        out_df['new_state'] = out_df.outfile.str.split(' ', expand=True)[split_index]
-        if logger is not None: logger.debug('out_df:\n{}'.format(out_df))
+        if lens_type == 'feedforward':
+            output_lines = tail(f, window=num_lines)
+
+        elif lens_type == 'recurrent':
+            len_bank = num_lines / 2
+            output_lines = tail(f, window=num_lines + 2)
+            p1 = output_lines[1:len_bank+1]
+            assert(len(p1) == len_bank)
+
+            p2 = output_lines[len_bank + 2:]
+            assert(len(p1) == len_bank)
+
+            output_lines = p1 + p2
+        else:
+            raise ValueError
+
+    out_df = DataFrame({'outfile': output_lines})
+    out_df['new_state'] = out_df.outfile.str.split(' ', expand=True)[split_index]
+    if logger is not None: logger.debug('out_df:\n{}'.format(out_df))
 
     new_state = out_df['new_state']
 
